@@ -58,9 +58,21 @@ const generatedId = () => {
 }
 
 app.post('/api/persons', (req, res) => {
+    const body = req.body
+
+    if(!body.name || !body.number) {
+        return res.status(400).json({
+            error: 'Name or number missing'
+        })
+    } else if (persons.find(p => p.name === body.name)) {
+        return res.status(400).json({
+            error: `${body.name} is already in the phonebook`
+        })
+    }
+
     const person = {
-        name: 'Niina Mattola',
-        number: '1234567890',
+        name: body.name,
+        number: body.number,
         id: generatedId()
     }
 
