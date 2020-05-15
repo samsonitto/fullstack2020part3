@@ -18,33 +18,38 @@ app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
 })
 
-app.get('/api/persons', (req, res) => {
-  //res.json(persons)
+app.get('/api/persons', (req, res, next) => {
   Person.find({}).then(persons => {
     res.json(persons.map(person => person.toJSON()))
   })
+  .catch(error => next(error))
 })
 
-app.get('/info', (req, res) => {
-    const qty = persons.length
-    const time = new Date()
+app.get('/info', (req, res, next) => {
+  let qty = 0
+  let content = ''
+  const time = new Date()
 
-    const content = `<p>Phonebook has info for ${qty} people</p>
-                    <p>${time}</p>`
-
-  res.send(content)
+  Person.find({}).then(persons => {
+    qty = persons.length
+    content = `<p>Phonebook has info for ${qty} people</p>
+                  <p>${time}</p>`
+    res.send(content)
+  })
+  .catch(error => next(error))
 })
 
-app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(p => p.id === id)
-
-    if(person) {
-        res.json(person)
-    } else {
-        res.send(`There is no such person`)
-        res.status(404).end()     
-    }
+app.get('/api/persons/:id', (req, res, next) => {
+    Person.findById(req.params.id)
+      .then(person => {
+        if(person) {
+          res.json(person)
+      } else {
+          res.send(`There is no such person`)
+          res.status(404).end()     
+      }
+      })
+      .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
