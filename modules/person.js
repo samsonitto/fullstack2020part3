@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
 
 mongoose.set('useFindAndModify', false)
+mongoose.set('useCreateIndex', true)
 
 const url = process.env.MONGODB_URI
 
@@ -15,9 +17,9 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     })
 
 const contactSchema = new mongoose.Schema({
-    name: String,
-    number: String,
-    date: Date
+    name: { type: String, required: true, unique: true },
+    number: { type: String, required: true, unique: true, minlength: 10 },
+    date: { type: Date, required: true }
 })
 
 contactSchema.set('toJSON', {
@@ -27,5 +29,7 @@ contactSchema.set('toJSON', {
         delete returnedObject.__v
     }
 })
+
+contactSchema.plugin(uniqueValidator)
 
 module.exports = mongoose.model('Person', contactSchema)
