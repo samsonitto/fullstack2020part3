@@ -23,3 +23,4 @@ https://fullstack2020phonebook.herokuapp.com/
   * ```"server": "json-server -p3001 --watch db.json"```
 * set "REACT_APP_NOT_SECRET_CODE=abcdef" && npm start
 * npm run json-server
+* git push heroku master
