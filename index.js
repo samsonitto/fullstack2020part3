@@ -1,29 +1,31 @@
 require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
+// eslint-disable-next-line import/newline-after-import
 const cors = require('cors')
 const app = express()
 const Person = require('./modules/person')
 
-morgan.token('body', function (req, res) { return JSON.stringify(req.body) });
+// eslint-disable-next-line no-unused-vars
+morgan.token('body', (req, res) => JSON.stringify(req.body))
 
 app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan(':method :url :status - :response-time ms :body'))
 app.use(cors())
 
-
-let persons = []
-
 app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/persons', (req, res, next) => {
-  Person.find({}).then(persons => {
-    res.json(persons.map(person => person.toJSON()))
-  })
-  .catch(error => next(error))
+  Person
+    .find({})
+    .then((persons) => {
+      res
+        .json(persons.map((person) => person.toJSON()))
+    })
+    .catch((error) => next(error))
 })
 
 app.get('/info', (req, res, next) => {
@@ -31,83 +33,86 @@ app.get('/info', (req, res, next) => {
   let content = ''
   const time = new Date()
 
-  Person.find({}).then(persons => {
-    qty = persons.length
-    content = `<p>Phonebook has info for ${qty} people</p>
+  Person
+    .find({})
+    .then((persons) => {
+      qty = persons.length
+      content = `<p>Phonebook has info for ${qty} people</p>
                   <p>${time}</p>`
-    res.send(content)
-  })
-  .catch(error => next(error))
+      res.send(content)
+    })
+    .catch((error) => next(error))
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
-    Person.findById(req.params.id)
-      .then(person => {
-        if(person) {
-          res.json(person)
+  Person.findById(req.params.id)
+    .then((person) => {
+      if (person) {
+        res.json(person)
       } else {
-          res.send(`There is no such person`)
-          res.status(404).end()     
+        res.send('There is no such person')
+        res.status(404).end()
       }
-      })
-      .catch(error => next(error))
+    })
+    .catch((error) => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
-    Person.findByIdAndDelete(req.params.id)
-      .then(result => {
-        res.status(204).end()
-      })
-      .catch(error => next(error))
+  Person
+    .findByIdAndDelete(req.params.id)
+    .then(() => {
+      res.status(204).end()
+    })
+    .catch((error) => next(error))
 
-    res.status(204).end()
+  res.status(204).end()
 })
 
+// eslint-disable-next-line consistent-return
 app.post('/api/persons', (req, res, next) => {
-    const body = req.body
+  const { body } = req
 
-    if(!body.name || !body.number) {
-        return res.status(400).json({
-            error: 'Name or number missing'
-        })
-    } else if (persons.find(p => p.name === body.name)) {
-        return res.status(400).json({
-            error: `${body.name} is already in the phonebook`
-        })
-    }
-
-    const person = new Person({
-      name: body.name,
-      number: body.number,
-      date: new Date()
+  if (!body.name || !body.number) {
+    return res.status(400).json({
+      error: 'Name or number missing',
     })
+  }
 
-    person.save().then(savedPerson => {
-      res.json(savedPerson.toJSON())
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+    date: new Date(),
+  })
+
+  person
+    .save()
+    .then((savedPerson) => {
+      res
+        .json(savedPerson.toJSON())
     })
-    .catch(error => next(error))
+    .catch((error) => next(error))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
-  const body = req.body
+  const { body } = req
 
   const person = {
     name: body.name,
-    number: body.number
+    number: body.number,
   }
 
   Person.findByIdAndUpdate(req.params.id, person, { new: true })
-    .then(updatedPerson => {
+    .then((updatedPerson) => {
       res.json(updatedPerson.toJSON())
     })
-    .catch(error => next(error))
-}) 
+    .catch((error) => next(error))
+})
 
+// eslint-disable-next-line consistent-return
 const errorHandler = (error, request, response, next) => {
-  console.error('step1', error.message)
-
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  // eslint-disable-next-line no-else-return
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   }
@@ -117,7 +122,7 @@ const errorHandler = (error, request, response, next) => {
 
 app.use(errorHandler)
 
-const PORT = process.env.PORT
+const { PORT } = process.env
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

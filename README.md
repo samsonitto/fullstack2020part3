@@ -8,12 +8,13 @@ https://fullstack2020phonebook.herokuapp.com/
 
 ## Tuntikirjanpito
 
-| Osa | Käytetty aika (h) |
-| --- | :---------------: |
-| 0   |        3.5        |
-| 1   |         6         |
-| 2   |       11.5        |
-| 3   |         6         |
+| Osa      | Käytetty aika (h) |
+| -------- | :---------------: |
+| 0        |        3.5        |
+| 1        |         6         |
+| 2        |       11.5        |
+| 3        |        7.5        |
+| Yhteensä |       26.5        |
 
 ## Cheatsheet
 
