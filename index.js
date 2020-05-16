@@ -7,10 +7,11 @@ const Person = require('./modules/person')
 
 morgan.token('body', function (req, res) { return JSON.stringify(req.body) });
 
+app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan(':method :url :status - :response-time ms :body'))
 app.use(cors())
-app.use(express.static('build'))
+
 
 let persons = []
 
@@ -62,7 +63,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
     res.status(204).end()
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     const body = req.body
 
     if(!body.name || !body.number) {
@@ -84,6 +85,7 @@ app.post('/api/persons', (req, res) => {
     person.save().then(savedPerson => {
       res.json(savedPerson.toJSON())
     })
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
@@ -102,7 +104,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 }) 
 
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
+  console.error('step1', error.message)
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })

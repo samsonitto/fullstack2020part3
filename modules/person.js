@@ -17,10 +17,12 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     })
 
 const contactSchema = new mongoose.Schema({
-    name: { type: String, required: true, unique: true },
-    number: { type: String, required: true, unique: true, minlength: 10 },
+    name: { type: String, required: true, unique: true, minlength: 3 },
+    number: { type: String, required: true, unique: true, minlength: 8 },
     date: { type: Date, required: true }
 })
+
+contactSchema.plugin(uniqueValidator)
 
 contactSchema.set('toJSON', {
     transform: (document, returnedObject) => {
@@ -30,6 +32,6 @@ contactSchema.set('toJSON', {
     }
 })
 
-contactSchema.plugin(uniqueValidator)
+
 
 module.exports = mongoose.model('Person', contactSchema)
