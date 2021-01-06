@@ -13,7 +13,7 @@ https://fullstack2020phonebook.herokuapp.com/
 | 0        |        3.5        |
 | 1        |         6         |
 | 2        |       11.5        |
-| 3        |        7.5        |
+| 3        |        8.5        |
 | Yhteensä |       26.5        |
 
 ## Cheatsheet
